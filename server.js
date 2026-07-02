@@ -25,6 +25,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+app.use('/api/collaborations', require('./routes/collaborationRoutes'));
 
 // Manual XSS/injection protection
 app.use((req, res, next) => {
