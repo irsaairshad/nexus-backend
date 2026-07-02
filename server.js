@@ -14,13 +14,16 @@ const server = http.createServer(app);
 // Socket.IO setup with CORS
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  credentials: true,
+}));
 app.use(express.json());
 
 // Manual XSS/injection protection
