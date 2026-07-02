@@ -26,6 +26,8 @@ const userSchema = new mongoose.Schema(
     totalInvestments: { type: Number },
     minimumInvestment: { type: String },
     maximumInvestment: { type: String },
+    otp: { type: String },
+    otpExpiry: { type: Date },
   },
   { timestamps: true } 
 );

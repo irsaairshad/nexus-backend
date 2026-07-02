@@ -23,6 +23,22 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
+// Manual XSS/injection protection
+app.use((req, res, next) => {
+  const sanitize = (obj) => {
+    if (typeof obj === 'string') {
+      // Sirf dangerous characters hatao, @ aur # nahi
+      return obj.replace(/[<>]/g, '').replace(/\$\[/g, '').replace(/\$where/g, '');
+    }
+    if (typeof obj === 'object' && obj !== null) {
+      Object.keys(obj).forEach(key => { obj[key] = sanitize(obj[key]); });
+    }
+    return obj;
+  };
+  if (req.body) req.body = sanitize(req.body);
+  next();
+});
+
 // Test route
 app.get('/', (req, res) => {
   res.send('Nexus Backend API is running...');
@@ -33,6 +49,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/uploads', express.static('uploads'));
 app.use('/api/documents', require('./routes/documentRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
 app.use('/api/meetings', require('./routes/meetingRoutes'));
 
 // ─── WebRTC Signaling Server ───────────────────────────────────────────────
